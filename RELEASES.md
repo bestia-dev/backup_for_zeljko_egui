@@ -12,6 +12,8 @@ The TODO section is part of the [README.md](https://github.com/bestia-dev/backup
 
 - auto
 
+- auto
+
 ## Version 2024.1126.1404 (2024-11-26)
 
 - x
