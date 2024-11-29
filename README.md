@@ -5,7 +5,7 @@
 [//]: # (auto_cargo_toml_to_md start)
 
 **Simple backup program tailored for my friend Željko. Made with rust and egui.**  
-***version: 2024.1129.1511 date: 2024-11-29 author: [bestia.dev](https://bestia.dev) repository: [GitHub](https://github.com/bestia-dev/backup_for_zeljko_egui)***
+***version: 2024.1129.1522 date: 2024-11-29 author: [bestia.dev](https://bestia.dev) repository: [GitHub](https://github.com/bestia-dev/backup_for_zeljko_egui)***
 
  ![obsolete](https://img.shields.io/badge/obsolete-red)
  ![tutorial](https://img.shields.io/badge/tutorial-orange)
@@ -52,11 +52,15 @@ Then I will use `robocopy` to make a "mirror backup". Sounds easy.
 
 My friend is not a computer guy, so I decided that a CLI program in a terminal is not for him. He is comfortable to use GUI programs in Windows.
 
-I will experiment with the crate `egui` to create a super simple GUI program for Windows.
+I experimented with the crate `egui` to create a super simple GUI program for Windows, but I don't like the "immediate mode GUI".  
+I will rewrite it using "iced retained mode GUI".
 
 ## Cross compile to windows
 
 On my machine I have Windows11 with WSL/Debian. I will cross compile to Windows, copy the exe file with `scp` and run it on Windows.  
+
+I use `cargo-auto` for automation of the build process and to commit to GitHub. Just run `cargo auto` and follow the instructions. To work with GitHub it will need the Personal Access Token from <https://github.com/settings/tokens>.  
+
 Copy the exe file from the container 'crustde' to win folder. Run in windows git-bash:
 
 ```bash

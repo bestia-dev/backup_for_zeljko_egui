@@ -1,6 +1,7 @@
 {
-  "old_description": "counter GUI with egui",
+  "old_description": "Simple backup program tailored for my friend Željko. Made with rust and egui.",
   "old_keywords": [
+    "obsolete",
     "tutorial",
     "egui",
     "rust",
