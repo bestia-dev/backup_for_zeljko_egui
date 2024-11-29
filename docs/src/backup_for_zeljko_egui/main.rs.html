@@ -1,0 +1,633 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/main.rs`."><title>main.rs - source</title><script>if(window.location.protocol!=="file:")document.head.insertAdjacentHTML("beforeend","SourceSerif4-Regular-46f98efaafac5295.ttf.woff2,FiraSans-Regular-018c141bf0843ffd.woff2,FiraSans-Medium-8f9a781e4970d388.woff2,SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2,SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2".split(",").map(f=>`<link rel="preload" as="font" type="font/woff2" crossorigin href="../../static.files/${f}">`).join(""))</script><link rel="stylesheet" href="../../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../../static.files/rustdoc-492a78a4a87dcc01.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../../static.files/" data-current-crate="backup_for_zeljko_egui" data-themes="" data-resource-suffix="" data-rustdoc-version="1.82.0 (f6e511eec 2024-10-15)" data-channel="1.82.0" data-search-js="search-a99f1315e7cc5121.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../../static.files/storage-118b08c4c78b968e.js"></script><script defer src="../../static.files/src-script-e66d777a5a92e9b2.js"></script><script defer src="../../src-files.js"></script><script defer src="../../static.files/main-921df33f47b8780c.js"></script><noscript><link rel="stylesheet" href="../../static.files/noscript-3b12f09e550e0385.css"></noscript><link rel="alternate icon" type="image/png" href="../../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc src"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="sidebar"><div class="src-sidebar-title"><h2>Files</h2></div></nav><div class="sidebar-resizer"></div><main><rustdoc-search></rustdoc-search><section id="main-content" class="content"><div class="example-wrap"><div data-nosnippet><pre class="src-line-numbers"><a href="#1" id="1">1</a>
+<a href="#2" id="2">2</a>
+<a href="#3" id="3">3</a>
+<a href="#4" id="4">4</a>
+<a href="#5" id="5">5</a>
+<a href="#6" id="6">6</a>
+<a href="#7" id="7">7</a>
+<a href="#8" id="8">8</a>
+<a href="#9" id="9">9</a>
+<a href="#10" id="10">10</a>
+<a href="#11" id="11">11</a>
+<a href="#12" id="12">12</a>
+<a href="#13" id="13">13</a>
+<a href="#14" id="14">14</a>
+<a href="#15" id="15">15</a>
+<a href="#16" id="16">16</a>
+<a href="#17" id="17">17</a>
+<a href="#18" id="18">18</a>
+<a href="#19" id="19">19</a>
+<a href="#20" id="20">20</a>
+<a href="#21" id="21">21</a>
+<a href="#22" id="22">22</a>
+<a href="#23" id="23">23</a>
+<a href="#24" id="24">24</a>
+<a href="#25" id="25">25</a>
+<a href="#26" id="26">26</a>
+<a href="#27" id="27">27</a>
+<a href="#28" id="28">28</a>
+<a href="#29" id="29">29</a>
+<a href="#30" id="30">30</a>
+<a href="#31" id="31">31</a>
+<a href="#32" id="32">32</a>
+<a href="#33" id="33">33</a>
+<a href="#34" id="34">34</a>
+<a href="#35" id="35">35</a>
+<a href="#36" id="36">36</a>
+<a href="#37" id="37">37</a>
+<a href="#38" id="38">38</a>
+<a href="#39" id="39">39</a>
+<a href="#40" id="40">40</a>
+<a href="#41" id="41">41</a>
+<a href="#42" id="42">42</a>
+<a href="#43" id="43">43</a>
+<a href="#44" id="44">44</a>
+<a href="#45" id="45">45</a>
+<a href="#46" id="46">46</a>
+<a href="#47" id="47">47</a>
+<a href="#48" id="48">48</a>
+<a href="#49" id="49">49</a>
+<a href="#50" id="50">50</a>
+<a href="#51" id="51">51</a>
+<a href="#52" id="52">52</a>
+<a href="#53" id="53">53</a>
+<a href="#54" id="54">54</a>
+<a href="#55" id="55">55</a>
+<a href="#56" id="56">56</a>
+<a href="#57" id="57">57</a>
+<a href="#58" id="58">58</a>
+<a href="#59" id="59">59</a>
+<a href="#60" id="60">60</a>
+<a href="#61" id="61">61</a>
+<a href="#62" id="62">62</a>
+<a href="#63" id="63">63</a>
+<a href="#64" id="64">64</a>
+<a href="#65" id="65">65</a>
+<a href="#66" id="66">66</a>
+<a href="#67" id="67">67</a>
+<a href="#68" id="68">68</a>
+<a href="#69" id="69">69</a>
+<a href="#70" id="70">70</a>
+<a href="#71" id="71">71</a>
+<a href="#72" id="72">72</a>
+<a href="#73" id="73">73</a>
+<a href="#74" id="74">74</a>
+<a href="#75" id="75">75</a>
+<a href="#76" id="76">76</a>
+<a href="#77" id="77">77</a>
+<a href="#78" id="78">78</a>
+<a href="#79" id="79">79</a>
+<a href="#80" id="80">80</a>
+<a href="#81" id="81">81</a>
+<a href="#82" id="82">82</a>
+<a href="#83" id="83">83</a>
+<a href="#84" id="84">84</a>
+<a href="#85" id="85">85</a>
+<a href="#86" id="86">86</a>
+<a href="#87" id="87">87</a>
+<a href="#88" id="88">88</a>
+<a href="#89" id="89">89</a>
+<a href="#90" id="90">90</a>
+<a href="#91" id="91">91</a>
+<a href="#92" id="92">92</a>
+<a href="#93" id="93">93</a>
+<a href="#94" id="94">94</a>
+<a href="#95" id="95">95</a>
+<a href="#96" id="96">96</a>
+<a href="#97" id="97">97</a>
+<a href="#98" id="98">98</a>
+<a href="#99" id="99">99</a>
+<a href="#100" id="100">100</a>
+<a href="#101" id="101">101</a>
+<a href="#102" id="102">102</a>
+<a href="#103" id="103">103</a>
+<a href="#104" id="104">104</a>
+<a href="#105" id="105">105</a>
+<a href="#106" id="106">106</a>
+<a href="#107" id="107">107</a>
+<a href="#108" id="108">108</a>
+<a href="#109" id="109">109</a>
+<a href="#110" id="110">110</a>
+<a href="#111" id="111">111</a>
+<a href="#112" id="112">112</a>
+<a href="#113" id="113">113</a>
+<a href="#114" id="114">114</a>
+<a href="#115" id="115">115</a>
+<a href="#116" id="116">116</a>
+<a href="#117" id="117">117</a>
+<a href="#118" id="118">118</a>
+<a href="#119" id="119">119</a>
+<a href="#120" id="120">120</a>
+<a href="#121" id="121">121</a>
+<a href="#122" id="122">122</a>
+<a href="#123" id="123">123</a>
+<a href="#124" id="124">124</a>
+<a href="#125" id="125">125</a>
+<a href="#126" id="126">126</a>
+<a href="#127" id="127">127</a>
+<a href="#128" id="128">128</a>
+<a href="#129" id="129">129</a>
+<a href="#130" id="130">130</a>
+<a href="#131" id="131">131</a>
+<a href="#132" id="132">132</a>
+<a href="#133" id="133">133</a>
+<a href="#134" id="134">134</a>
+<a href="#135" id="135">135</a>
+<a href="#136" id="136">136</a>
+<a href="#137" id="137">137</a>
+<a href="#138" id="138">138</a>
+<a href="#139" id="139">139</a>
+<a href="#140" id="140">140</a>
+<a href="#141" id="141">141</a>
+<a href="#142" id="142">142</a>
+<a href="#143" id="143">143</a>
+<a href="#144" id="144">144</a>
+<a href="#145" id="145">145</a>
+<a href="#146" id="146">146</a>
+<a href="#147" id="147">147</a>
+<a href="#148" id="148">148</a>
+<a href="#149" id="149">149</a>
+<a href="#150" id="150">150</a>
+<a href="#151" id="151">151</a>
+<a href="#152" id="152">152</a>
+<a href="#153" id="153">153</a>
+<a href="#154" id="154">154</a>
+<a href="#155" id="155">155</a>
+<a href="#156" id="156">156</a>
+<a href="#157" id="157">157</a>
+<a href="#158" id="158">158</a>
+<a href="#159" id="159">159</a>
+<a href="#160" id="160">160</a>
+<a href="#161" id="161">161</a>
+<a href="#162" id="162">162</a>
+<a href="#163" id="163">163</a>
+<a href="#164" id="164">164</a>
+<a href="#165" id="165">165</a>
+<a href="#166" id="166">166</a>
+<a href="#167" id="167">167</a>
+<a href="#168" id="168">168</a>
+<a href="#169" id="169">169</a>
+<a href="#170" id="170">170</a>
+<a href="#171" id="171">171</a>
+<a href="#172" id="172">172</a>
+<a href="#173" id="173">173</a>
+<a href="#174" id="174">174</a>
+<a href="#175" id="175">175</a>
+<a href="#176" id="176">176</a>
+<a href="#177" id="177">177</a>
+<a href="#178" id="178">178</a>
+<a href="#179" id="179">179</a>
+<a href="#180" id="180">180</a>
+<a href="#181" id="181">181</a>
+<a href="#182" id="182">182</a>
+<a href="#183" id="183">183</a>
+<a href="#184" id="184">184</a>
+<a href="#185" id="185">185</a>
+<a href="#186" id="186">186</a>
+<a href="#187" id="187">187</a>
+<a href="#188" id="188">188</a>
+<a href="#189" id="189">189</a>
+<a href="#190" id="190">190</a>
+<a href="#191" id="191">191</a>
+<a href="#192" id="192">192</a>
+<a href="#193" id="193">193</a>
+<a href="#194" id="194">194</a>
+<a href="#195" id="195">195</a>
+<a href="#196" id="196">196</a>
+<a href="#197" id="197">197</a>
+<a href="#198" id="198">198</a>
+<a href="#199" id="199">199</a>
+<a href="#200" id="200">200</a>
+<a href="#201" id="201">201</a>
+<a href="#202" id="202">202</a>
+<a href="#203" id="203">203</a>
+<a href="#204" id="204">204</a>
+<a href="#205" id="205">205</a>
+<a href="#206" id="206">206</a>
+<a href="#207" id="207">207</a>
+<a href="#208" id="208">208</a>
+<a href="#209" id="209">209</a>
+<a href="#210" id="210">210</a>
+<a href="#211" id="211">211</a>
+<a href="#212" id="212">212</a>
+<a href="#213" id="213">213</a>
+<a href="#214" id="214">214</a>
+<a href="#215" id="215">215</a>
+<a href="#216" id="216">216</a>
+<a href="#217" id="217">217</a>
+<a href="#218" id="218">218</a>
+<a href="#219" id="219">219</a>
+<a href="#220" id="220">220</a>
+<a href="#221" id="221">221</a>
+<a href="#222" id="222">222</a>
+<a href="#223" id="223">223</a>
+<a href="#224" id="224">224</a>
+<a href="#225" id="225">225</a>
+<a href="#226" id="226">226</a>
+<a href="#227" id="227">227</a>
+<a href="#228" id="228">228</a>
+<a href="#229" id="229">229</a>
+<a href="#230" id="230">230</a>
+<a href="#231" id="231">231</a>
+<a href="#232" id="232">232</a>
+<a href="#233" id="233">233</a>
+<a href="#234" id="234">234</a>
+<a href="#235" id="235">235</a>
+<a href="#236" id="236">236</a>
+<a href="#237" id="237">237</a>
+<a href="#238" id="238">238</a>
+<a href="#239" id="239">239</a>
+<a href="#240" id="240">240</a>
+<a href="#241" id="241">241</a>
+<a href="#242" id="242">242</a>
+<a href="#243" id="243">243</a>
+<a href="#244" id="244">244</a>
+<a href="#245" id="245">245</a>
+<a href="#246" id="246">246</a>
+<a href="#247" id="247">247</a>
+<a href="#248" id="248">248</a>
+<a href="#249" id="249">249</a>
+<a href="#250" id="250">250</a>
+<a href="#251" id="251">251</a>
+<a href="#252" id="252">252</a>
+<a href="#253" id="253">253</a>
+<a href="#254" id="254">254</a>
+<a href="#255" id="255">255</a>
+<a href="#256" id="256">256</a>
+<a href="#257" id="257">257</a>
+<a href="#258" id="258">258</a>
+<a href="#259" id="259">259</a>
+<a href="#260" id="260">260</a>
+<a href="#261" id="261">261</a>
+<a href="#262" id="262">262</a>
+<a href="#263" id="263">263</a>
+<a href="#264" id="264">264</a>
+<a href="#265" id="265">265</a>
+<a href="#266" id="266">266</a>
+<a href="#267" id="267">267</a>
+<a href="#268" id="268">268</a>
+<a href="#269" id="269">269</a>
+<a href="#270" id="270">270</a>
+<a href="#271" id="271">271</a>
+<a href="#272" id="272">272</a>
+<a href="#273" id="273">273</a>
+<a href="#274" id="274">274</a>
+<a href="#275" id="275">275</a>
+<a href="#276" id="276">276</a>
+<a href="#277" id="277">277</a>
+<a href="#278" id="278">278</a>
+<a href="#279" id="279">279</a>
+<a href="#280" id="280">280</a>
+<a href="#281" id="281">281</a>
+<a href="#282" id="282">282</a>
+<a href="#283" id="283">283</a>
+<a href="#284" id="284">284</a>
+<a href="#285" id="285">285</a>
+<a href="#286" id="286">286</a>
+<a href="#287" id="287">287</a>
+<a href="#288" id="288">288</a>
+<a href="#289" id="289">289</a>
+<a href="#290" id="290">290</a>
+<a href="#291" id="291">291</a>
+<a href="#292" id="292">292</a>
+<a href="#293" id="293">293</a>
+<a href="#294" id="294">294</a>
+<a href="#295" id="295">295</a>
+<a href="#296" id="296">296</a>
+<a href="#297" id="297">297</a>
+<a href="#298" id="298">298</a>
+<a href="#299" id="299">299</a>
+<a href="#300" id="300">300</a>
+<a href="#301" id="301">301</a>
+<a href="#302" id="302">302</a>
+<a href="#303" id="303">303</a>
+<a href="#304" id="304">304</a>
+<a href="#305" id="305">305</a>
+<a href="#306" id="306">306</a>
+<a href="#307" id="307">307</a>
+<a href="#308" id="308">308</a>
+<a href="#309" id="309">309</a>
+<a href="#310" id="310">310</a>
+<a href="#311" id="311">311</a>
+<a href="#312" id="312">312</a>
+<a href="#313" id="313">313</a>
+<a href="#314" id="314">314</a>
+<a href="#315" id="315">315</a>
+<a href="#316" id="316">316</a>
+</pre></div><pre class="rust"><code><span class="comment">// backup_for_zeljko_egui/src/main.rs
+
+</span><span class="attr">#![doc=<span class="macro">include_str!</span>(<span class="string">"../README.md"</span>)]
+</span><span class="comment">// This app is intended just for Windows
+</span><span class="attr">#![cfg(target_os = <span class="string">"windows"</span>)]
+</span><span class="comment">// In VSCode settings#![cfg(target_os = "windows")] I needed to set:
+// "rust-analyzer.cargo.target": "x86_64-pc-windows-gnu"
+// to avoid rust-analyzer to show me errors that are Linux specific,
+// because I cross-compile from Linux to Windows.
+
+// Do not open terminal when executing the program in windows
+</span><span class="attr">#![windows_subsystem = <span class="string">"windows"</span>]
+
+</span><span class="kw">use </span>std::{format, vec};
+<span class="kw">use </span>unwrap::unwrap;
+
+<span class="kw">static </span>ORIGINAL1: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">r#"original1"#</span>;
+<span class="kw">static </span>BACKUP1_OF_ORIGINAL1: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">r#"backup1_of_original1"#</span>;
+<span class="kw">static </span>BACKUP2_OF_ORIGINAL1: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">r#"backup2_of_original1"#</span>;
+<span class="kw">static </span>ORIGINAL2: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">r#"original2"#</span>;
+<span class="kw">static </span>BACKUP_OF_ORIGINAL2: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="string">r#"backup_of_original2"#</span>;
+
+<span class="attr">#[cfg(target_os = <span class="string">"windows"</span>)]
+</span><span class="kw">fn </span>main() {
+    <span class="comment">// scaffolding for catch panic and log to file
+    </span><span class="kw">let </span>_log2 = log2::open(<span class="string">"log.txt"</span>).size(<span class="number">1 </span>* <span class="number">1024 </span>* <span class="number">1024</span>).rotate(<span class="number">3</span>).level(<span class="string">"debug"</span>).start();
+
+    <span class="kw">let </span>version: <span class="kw-2">&amp;</span><span class="lifetime">'static </span>str = <span class="macro">env!</span>(<span class="string">"CARGO_PKG_VERSION"</span>);
+    <span class="macro">log::info!</span>(<span class="string">"Start app backup_for_zeljko_egui v{}"</span>, version);
+
+    <span class="comment">// catch panics and write to log.txt
+    </span>std::panic::set_hook(Box::new(|info| {
+        <span class="kw">let </span>backtrace = std::backtrace::Backtrace::force_capture();
+        handle_panic(info.payload(), backtrace)
+    }));
+    <span class="kw">let _ </span>= std::panic::catch_unwind(|| {
+        <span class="kw">let _ </span>= main_inner();
+    });
+}
+
+<span class="kw">fn </span>handle_panic(payload: <span class="kw-2">&amp;</span>(<span class="kw">dyn </span>std::any::Any + Send), backtrace: std::backtrace::Backtrace) {
+    <span class="macro">log::error!</span>(<span class="string">"Panicked: "</span>);
+    <span class="kw">if let </span><span class="prelude-val">Some</span>(string) = payload.downcast_ref::&lt;String&gt;() {
+        <span class="macro">log::error!</span>(<span class="string">"{string}"</span>);
+    } <span class="kw">else if let </span><span class="prelude-val">Some</span>(str) = payload.downcast_ref::&lt;<span class="kw-2">&amp;</span><span class="lifetime">'static </span>str&gt;() {
+        <span class="macro">log::error!</span>(<span class="string">"{str}"</span>)
+    } <span class="kw">else </span>{
+        <span class="macro">log::error!</span>(<span class="string">"{payload:?}"</span>)
+    }
+
+    <span class="macro">log::error!</span>(<span class="string">"Backtrace: {backtrace:#?}"</span>);
+}
+
+<span class="kw">fn </span>main_inner() -&gt; eframe::Result {
+    <span class="kw">let </span>options = eframe::NativeOptions {
+        viewport: egui::ViewportBuilder::default().with_inner_size([<span class="number">900.0</span>, <span class="number">600.0</span>]),
+        ..Default::default()
+    };
+    eframe::run_native(<span class="string">"Backup for Željko"</span>, options, Box::new(|<span class="kw">_</span>| <span class="prelude-val">Ok</span>(Box::&lt;MyApp&gt;::default())))
+}
+
+<span class="kw">struct </span>MyApp {
+    original1: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    backup1_of_original1: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    backup2_of_original1: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    original2: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    backup_of_original2: <span class="prelude-ty">Option</span>&lt;String&gt;,
+    files_changed: Vec&lt;String&gt;,
+    backup_is_done: bool,
+    count_files_changed: usize,
+    text_to_show: String,
+}
+
+<span class="kw">impl </span>Default <span class="kw">for </span>MyApp {
+    <span class="kw">fn </span>default() -&gt; <span class="self">Self </span>{
+        <span class="doccomment">/// internal function
+        </span><span class="kw">fn </span>find_exist_folder_in_drives(path_wo_drive_letter: <span class="kw-2">&amp;</span>str) -&gt; <span class="prelude-ty">Option</span>&lt;String&gt; {
+            <span class="kw">let </span>drives_letters = <span class="macro">vec!</span>[<span class="string">"c"</span>, <span class="string">"d"</span>, <span class="string">"e"</span>, <span class="string">"f"</span>, <span class="string">"g"</span>, <span class="string">"h"</span>, <span class="string">"i"</span>, <span class="string">"j"</span>, <span class="string">"k"</span>, <span class="string">"l"</span>, <span class="string">"m"</span>, <span class="string">"n"</span>, <span class="string">"o"</span>, <span class="string">"p"</span>, <span class="string">"q"</span>, <span class="string">"r"</span>, <span class="string">"s"</span>, <span class="string">"t"</span>, <span class="string">"u"</span>, <span class="string">"v"</span>, <span class="string">"w"</span>, <span class="string">"x"</span>, <span class="string">"y"</span>, <span class="string">"z"</span>];
+            <span class="kw">for </span>x <span class="kw">in </span>drives_letters.iter() {
+                <span class="kw">let </span>path = <span class="macro">format!</span>(<span class="string">r#"{x}:\{path_wo_drive_letter}"#</span>);
+                <span class="kw">if </span><span class="macro">unwrap!</span>(std::fs::exists(<span class="kw-2">&amp;</span>path)) {
+                    <span class="kw">return </span><span class="prelude-val">Some</span>(path);
+                }
+            }
+            <span class="prelude-val">None
+        </span>}
+
+        <span class="comment">// external drives can have different letters d:, e:, f:,...
+        // I need to check where is the foldername I expect. The folder names are fixed.
+        </span><span class="kw">let </span>original1 = find_exist_folder_in_drives(ORIGINAL1);
+        <span class="kw">let </span>backup1_of_original1 = find_exist_folder_in_drives(BACKUP1_OF_ORIGINAL1);
+        <span class="kw">let </span>backup2_of_original1 = find_exist_folder_in_drives(BACKUP2_OF_ORIGINAL1);
+        <span class="kw">let </span>original2 = find_exist_folder_in_drives(ORIGINAL2);
+        <span class="kw">let </span>backup_of_original2 = find_exist_folder_in_drives(BACKUP_OF_ORIGINAL2);
+
+        <span class="self">Self </span>{
+            original1,
+            backup1_of_original1,
+            backup2_of_original1,
+            original2,
+            backup_of_original2,
+            files_changed: <span class="macro">vec!</span>[],
+            backup_is_done: <span class="bool-val">false</span>,
+            count_files_changed: <span class="number">0</span>,
+            text_to_show: <span class="string">""</span>.to_string(),
+        }
+    }
+}
+
+<span class="kw">impl </span>eframe::App <span class="kw">for </span>MyApp {
+    <span class="kw">fn </span>update(<span class="kw-2">&amp;mut </span><span class="self">self</span>, egui_ctx: <span class="kw-2">&amp;</span>egui::Context, _frame: <span class="kw-2">&amp;mut </span>eframe::Frame) {
+        <span class="comment">// region: change colors
+        </span><span class="kw">let </span><span class="kw-2">mut </span>visuals = egui::Visuals::light();
+        visuals.widgets.active.fg_stroke.color = egui::Color32::BLACK;
+        visuals.override_text_color = <span class="prelude-val">Some</span>(egui::Color32::BLACK);
+        egui_ctx.set_visuals(visuals);
+        <span class="comment">// endregion: change colors
+
+        </span>egui_ctx.all_styles_mut(|style| {
+            style.spacing.scroll = egui::style::ScrollStyle::solid();
+        });
+
+        <span class="comment">// Install my own font (maybe supporting non-latin characters):
+        </span><span class="kw">let </span><span class="kw-2">mut </span>fonts = egui::FontDefinitions::default();
+        fonts
+            .font_data
+            <span class="comment">// .ttf and .otf supported
+            </span>.insert(<span class="string">"Roboto-Regular"</span>.to_owned(), egui::FontData::from_static(<span class="macro">include_bytes!</span>(<span class="string">"../fonts/Roboto-Regular.ttf"</span>)));
+        <span class="comment">// Put my font first (highest priority):
+        </span><span class="macro">unwrap!</span>(fonts.families.get_mut(<span class="kw-2">&amp;</span>egui::FontFamily::Proportional)).insert(<span class="number">0</span>, <span class="string">"Roboto-Regular"</span>.to_owned());
+        <span class="comment">// Put my font as last fallback for monospace:
+        </span><span class="macro">unwrap!</span>(fonts.families.get_mut(<span class="kw-2">&amp;</span>egui::FontFamily::Monospace)).push(<span class="string">"Roboto-Regular"</span>.to_owned());
+        egui_ctx.set_fonts(fonts);
+
+        <span class="kw">let </span>my_frame = egui::containers::Frame {
+            inner_margin: egui::epaint::Margin {
+                left: <span class="number">10.</span>,
+                right: <span class="number">0.</span>,
+                top: <span class="number">10.</span>,
+                bottom: <span class="number">0.</span>,
+            },
+            fill: egui::Color32::WHITE,
+            ..Default::default()
+        };
+
+        egui::CentralPanel::default().frame(my_frame).show(egui_ctx, |ui| {
+            egui_ctx.set_pixels_per_point(<span class="number">2.2</span>);
+            egui::ScrollArea::vertical()
+                .scroll_bar_visibility(egui::scroll_area::ScrollBarVisibility::AlwaysVisible)
+                .auto_shrink(<span class="bool-val">false</span>)
+                .show(ui, |ui| {
+                    ui.heading(<span class="string">"Backup for Željko"</span>);
+                    ui.label(<span class="string">"Simple backup program tailored for my friend Željko."</span>);
+                    ui.label(<span class="string">"Made with rust and egui."</span>);
+                    ui.hyperlink(<span class="string">"https://github.com/bestia-dev/backup_for_zeljko_egui"</span>);
+                    ui.label(<span class="string">"© bestia.dev 2024 MIT license Open-source and free as a beer"</span>);
+
+                    ui.label(<span class="string">" "</span>);
+                    ui.label(<span class="string">"First backup:"</span>);
+                    <span class="kw">if </span><span class="self">self</span>.original1.is_some() &amp;&amp; <span class="self">self</span>.backup1_of_original1.is_some() {
+                        ui.label(<span class="macro">format!</span>(<span class="string">"    {} ---&gt; {}"</span>, <span class="macro">unwrap!</span>(<span class="self">self</span>.original1.clone()), <span class="macro">unwrap!</span>(<span class="self">self</span>.backup1_of_original1.clone()),));
+                    } <span class="kw">else </span>{
+                        <span class="kw">if </span>!<span class="self">self</span>.original1.is_some() {
+                            ui.label(<span class="macro">format!</span>(<span class="string">"    Folder {} does not exist!"</span>, ORIGINAL1));
+                        }
+                        <span class="kw">if </span>!<span class="self">self</span>.backup1_of_original1.is_some() {
+                            ui.label(<span class="macro">format!</span>(<span class="string">"    Folder {} does not exist!"</span>, BACKUP1_OF_ORIGINAL1));
+                        }
+                    }
+                    ui.label(<span class="string">"Second backup:"</span>);
+                    <span class="kw">if </span><span class="self">self</span>.original1.is_some() &amp;&amp; <span class="self">self</span>.backup2_of_original1.is_some() {
+                        ui.label(<span class="macro">format!</span>(<span class="string">"    {} ---&gt; {}"</span>, <span class="macro">unwrap!</span>(<span class="self">self</span>.original1.clone()), <span class="macro">unwrap!</span>(<span class="self">self</span>.backup2_of_original1.clone()),));
+                    } <span class="kw">else </span>{
+                        <span class="kw">if </span>!<span class="self">self</span>.original1.is_some() {
+                            ui.label(<span class="macro">format!</span>(<span class="string">"    Folder {} does not exist!"</span>, ORIGINAL1));
+                        }
+                        <span class="kw">if </span>!<span class="self">self</span>.backup2_of_original1.is_some() {
+                            ui.label(<span class="macro">format!</span>(<span class="string">"    Folder {} does not exist!"</span>, BACKUP2_OF_ORIGINAL1));
+                        }
+                    }
+                    ui.label(<span class="string">"Third backup:"</span>);
+                    <span class="kw">if </span><span class="self">self</span>.original2.is_some() &amp;&amp; <span class="self">self</span>.backup_of_original2.is_some() {
+                        ui.label(<span class="macro">format!</span>(<span class="string">"    {} ---&gt; {}"</span>, <span class="macro">unwrap!</span>(<span class="self">self</span>.original2.clone()), <span class="macro">unwrap!</span>(<span class="self">self</span>.backup_of_original2.clone()),));
+                    } <span class="kw">else </span>{
+                        <span class="kw">if </span>!<span class="self">self</span>.original2.is_some() {
+                            ui.label(<span class="macro">format!</span>(<span class="string">"    Folder {} does not exist!"</span>, ORIGINAL2));
+                        }
+                        <span class="kw">if </span>!<span class="self">self</span>.backup_of_original2.is_some() {
+                            ui.label(<span class="macro">format!</span>(<span class="string">"    Folder {} does not exist!"</span>, BACKUP_OF_ORIGINAL2));
+                        }
+                    }
+                    ui.label(<span class="string">" "</span>);
+
+                    ui.with_layout(egui::Layout::left_to_right(egui::Align::TOP), |ui| {
+                        ui.add_enabled_ui(!<span class="self">self</span>.backup_is_done, |ui| {
+                            <span class="kw">let </span>start_button = ui.button(<span class="string">"Start backup"</span>);
+                            <span class="kw">if </span>start_button.clicked() &amp;&amp; !<span class="self">self</span>.backup_is_done {
+                                <span class="self">self</span>.backup_is_done = <span class="bool-val">true</span>;
+                                <span class="self">self</span>.start_all_backups_on_click();
+                            }
+                        });
+
+                        <span class="kw">let </span>exit_button = ui.button(<span class="string">"Exit program"</span>);
+                        <span class="kw">if </span>exit_button.clicked() {
+                            egui_ctx.send_viewport_cmd(egui::ViewportCommand::Close)
+                        }
+                    });
+                    ui.label(<span class="string">" "</span>);
+                    ui.label(<span class="self">self</span>.text_to_show.clone());
+                });
+        });
+    }
+}
+
+<span class="kw">impl </span>MyApp {
+    <span class="kw">fn </span>start_all_backups_on_click(<span class="kw-2">&amp;mut </span><span class="self">self</span>) {
+        <span class="comment">// 3 different backups
+        </span><span class="kw">if </span><span class="self">self</span>.original1.is_some() &amp;&amp; <span class="self">self</span>.backup1_of_original1.is_some() {
+            <span class="self">self</span>.text_to_show.push_str(<span class="string">"\nFirst backup\n"</span>);
+            <span class="self">self</span>.backup(<span class="macro">unwrap!</span>(<span class="self">self</span>.original1.clone()), <span class="macro">unwrap!</span>(<span class="self">self</span>.backup1_of_original1.clone()), <span class="string">"first"</span>);
+        }
+        <span class="kw">if </span><span class="self">self</span>.original1.is_some() &amp;&amp; <span class="self">self</span>.backup2_of_original1.is_some() {
+            <span class="self">self</span>.text_to_show.push_str(<span class="string">"\nSecond backup\n"</span>);
+            <span class="self">self</span>.backup(<span class="macro">unwrap!</span>(<span class="self">self</span>.original1.clone()), <span class="macro">unwrap!</span>(<span class="self">self</span>.backup2_of_original1.clone()), <span class="string">"second"</span>);
+        }
+        <span class="kw">if </span><span class="self">self</span>.original2.is_some() &amp;&amp; <span class="self">self</span>.backup_of_original2.is_some() {
+            <span class="self">self</span>.text_to_show.push_str(<span class="string">"\nThird backup\n"</span>);
+            <span class="self">self</span>.backup(<span class="macro">unwrap!</span>(<span class="self">self</span>.original2.clone()), <span class="macro">unwrap!</span>(<span class="self">self</span>.backup_of_original2.clone()), <span class="string">"third"</span>);
+        }
+        <span class="self">self</span>.text_to_show.push_str(<span class="kw-2">&amp;</span><span class="macro">format!</span>(<span class="string">"\nAll files changed for backup: {}\n"</span>, <span class="self">self</span>.count_files_changed));
+    }
+
+    <span class="kw">fn </span>backup(<span class="kw-2">&amp;mut </span><span class="self">self</span>, source: String, destination: String, backup_number: <span class="kw-2">&amp;</span>str) {
+        <span class="kw">let </span>output = command_robocopy_list_only(source.clone(), destination.clone());
+        <span class="self">self</span>.files_changed = parse_robocopy_output(output);
+        <span class="self">self</span>.count_files_changed += <span class="self">self</span>.files_changed.len();
+        <span class="self">self</span>.text_to_show.push_str(<span class="kw-2">&amp;</span><span class="self">self</span>.files_changed.join(<span class="string">"\n"</span>));
+        <span class="self">self</span>.text_to_show.push(<span class="string">'\n'</span>);
+
+        <span class="comment">// move the files instead of deleting them
+        </span><span class="kw">use </span>chrono::{DateTime, Local};
+        <span class="kw">let </span>current_local: DateTime&lt;Local&gt; = Local::now();
+        <span class="kw">let </span>now_formatted = current_local.format(<span class="string">"%Y-%m-%d_%H-%M-%S"</span>).to_string();
+        <span class="comment">// take the "e:\" part of destination to create the new folder
+        </span><span class="kw">let </span>deleted_on_backup_folder = <span class="macro">format!</span>(<span class="string">r#"{}deleted_or_renamed_on_backup\{now_formatted}_{backup_number}_backup"#</span>, <span class="kw-2">&amp;</span>destination[..<span class="number">3</span>]);
+        <span class="comment">// let mut debug_vec = vec![];
+        </span><span class="kw">for </span>x <span class="kw">in </span><span class="kw-2">&amp;</span><span class="self">self</span>.files_changed {
+            <span class="comment">// only the destination folder and prepare to move them
+            </span><span class="kw">if </span>x.starts_with(<span class="kw-2">&amp;</span>destination) {
+                <span class="kw">let </span>move_to = x.replace(<span class="kw-2">&amp;</span>destination, <span class="kw-2">&amp;</span>deleted_on_backup_folder);
+                <span class="kw">let </span>parent_dir = <span class="macro">unwrap!</span>(std::path::Path::new(<span class="kw-2">&amp;</span>move_to).parent());
+                <span class="kw">if </span>!parent_dir.exists() {
+                    <span class="macro">unwrap!</span>(std::fs::create_dir_all(<span class="kw-2">&amp;</span>parent_dir));
+                }
+                <span class="macro">unwrap!</span>(std::fs::rename(x, move_to.clone()));
+            }
+        }
+        command_robocopy_mir(source.clone(), destination.clone());
+    }
+}
+
+<span class="doccomment">/// robocopy list only
+</span><span class="kw">fn </span>command_robocopy_list_only(source: String, destination: String) -&gt; std::process::Output {
+    <span class="comment">// I isolated this call into a function because I need some specific windows flags.
+    // That ruins the editor capability to understand what types are used.
+    </span><span class="kw">use </span>std::os::windows::process::CommandExt;
+    <span class="kw">let </span>output = std::process::Command::new(<span class="string">"robocopy"</span>)
+        .args(<span class="kw-2">&amp;</span>[
+            source,
+            destination,
+            <span class="string">"/MIR"</span>.to_owned(),
+            <span class="string">"/L"</span>.to_owned(),
+            <span class="string">"/X"</span>.to_owned(),
+            <span class="string">"/FP"</span>.to_owned(),
+            <span class="string">"/NS"</span>.to_owned(),
+            <span class="string">"/NC"</span>.to_owned(),
+            <span class="string">"/NDL"</span>.to_owned(),
+        ])
+        <span class="comment">// specific windows flag to not open the terminal window
+        </span>.creation_flags(<span class="number">0x08000000</span>)
+        .output()
+        .expect(<span class="string">"failed to execute process"</span>);
+    output
+}
+
+<span class="kw">fn </span>parse_robocopy_output(output: std::process::Output) -&gt; Vec&lt;String&gt; {
+    <span class="kw">let </span><span class="kw-2">mut </span>vec_string: Vec&lt;String&gt; = <span class="macro">vec!</span>[];
+    <span class="comment">// find the third line ------
+    </span><span class="kw">let </span><span class="kw-2">mut </span>count_del_lines = <span class="number">0</span>;
+    <span class="comment">// import the trait that has .lines()
+    </span><span class="kw">use </span>std::io::BufRead;
+    <span class="kw">for </span>x <span class="kw">in </span>output.stdout.lines() {
+        <span class="kw">let </span>x = <span class="macro">unwrap!</span>(x);
+        <span class="kw">if </span>x.starts_with(<span class="string">"-----"</span>) {
+            count_del_lines += <span class="number">1</span>;
+        } <span class="kw">else if </span>count_del_lines == <span class="number">3 </span>&amp;&amp; !x.is_empty() {
+            vec_string.push(x.trim().to_string());
+        }
+    }
+    vec_string
+}
+
+<span class="doccomment">/// robocopy MIR
+</span><span class="kw">fn </span>command_robocopy_mir(source: String, destination: String) -&gt; std::process::Output {
+    <span class="comment">// I isolated this call into a function because I need some specific windows flags.
+    // That ruins the editor capability to understand what types are used.
+    </span><span class="kw">use </span>std::os::windows::process::CommandExt;
+    <span class="kw">let </span>output = std::process::Command::new(<span class="string">"robocopy"</span>)
+        .args(<span class="kw-2">&amp;</span>[source, destination, <span class="string">"/MIR"</span>.to_owned()])
+        <span class="comment">// specific windows flag to not open the terminal window
+        </span>.creation_flags(<span class="number">0x08000000</span>)
+        .output()
+        .expect(<span class="string">"failed to execute process"</span>);
+    output
+}
+<span class="comment">// rust_analyzer gives here the error: `main` function not found in crate, but it is not true.
+</span></code></pre></div></section></main></body></html>

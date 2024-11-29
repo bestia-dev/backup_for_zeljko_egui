@@ -1,0 +1,21 @@
+[package]
+name = "backup_for_zeljko_egui"
+version = "2024.1129.1511"
+authors = ["bestia.dev"]
+homepage = "https://bestia.dev"
+edition = "2021"
+description = "Simple backup program tailored for my friend Željko. Made with rust and egui."
+repository = "https://github.com/bestia-dev/backup_for_zeljko_egui"
+readme = "README.md"
+license = "MIT"
+keywords = ["obsolete","tutorial","egui","rust","gui"]
+categories = ["gui"]
+publish = false
+
+[dependencies]
+egui = "0.29.1"
+eframe = "0.29.1"
+chrono="0.4.38"
+unwrap="1.2.1"
+log="0.4.22"
+log2 = "0.1.14"
