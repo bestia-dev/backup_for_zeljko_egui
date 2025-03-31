@@ -1,6 +1,6 @@
 [package]
 name = "backup_for_zeljko_egui"
-version = "2024.1129.1522"
+version = "2025.331.1419"
 authors = ["bestia.dev"]
 homepage = "https://bestia.dev"
 edition = "2021"

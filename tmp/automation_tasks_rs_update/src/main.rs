@@ -1,4 +1,4 @@
-// automation_tasks_rs for backup_for_zeljko_egui
+// automation_tasks_rs for cargo_auto_template_new_cli
 
 // region: library and modules with basic automation tasks
 
@@ -49,8 +49,8 @@ fn match_arguments_and_call_tasks(mut args: std::env::Args) {
                 println!("  {YELLOW}Running automation task: {task}{RESET}");
                 if &task == "build" {
                     task_build();
-                } else if &task == "win_release" {
-                    task_win_release();
+                } else if &task == "release" {
+                    task_release();
                 } else if &task == "doc" {
                     task_doc();
                 } else if &task == "test" {
@@ -58,6 +58,8 @@ fn match_arguments_and_call_tasks(mut args: std::env::Args) {
                 } else if &task == "commit_and_push" {
                     let arg_2 = args.next();
                     task_commit_and_push(arg_2);
+                } else if &task == "publish_to_crates_io" {
+                    task_publish_to_crates_io();
                 } else if &task == "github_new_release" {
                     task_github_new_release();
                 } else {
@@ -78,7 +80,7 @@ fn print_help() {
 
   {YELLOW}User defined tasks in automation_tasks_rs:{RESET}
 {GREEN}cargo auto build{RESET} - {YELLOW}builds the crate in debug mode, fmt, increment version{RESET}
-{GREEN}cargo auto win_release{RESET} - {YELLOW}builds the crate in release mode (cross compile to win), fmt, increment version{RESET}
+{GREEN}cargo auto release{RESET} - {YELLOW}builds the crate in release mode, fmt, increment version{RESET}
 {GREEN}cargo auto doc{RESET} - {YELLOW}builds the docs, copy to docs directory{RESET}
 {GREEN}cargo auto test{RESET} - {YELLOW}runs all the tests{RESET}
 {GREEN}cargo auto commit_and_push "message"{RESET} - {YELLOW}commits with message and push with mandatory message{RESET}
@@ -86,6 +88,11 @@ fn print_help() {
   {YELLOW}<https://github.com/CRUSTDE-ContainerizedRustDevEnv/crustde_cnt_img_pod/blob/main/ssh_easy.md>{YELLOW}
   {YELLOW}On the very first commit, this task will initialize a new local git repository and create a remote GitHub repo.{RESET}
   {YELLOW}For the GitHub API the task needs the Access secret token from OAuth2 device workflow.{RESET}
+  {YELLOW}The secret token will be stored in a file encrypted with your SSH private key.{RESET}
+  {YELLOW}You can type the passphrase of the private key for every usee. This is pretty secure.{RESET}
+  {YELLOW}Somewhat less secure (but more comfortable) way is to store the private key in ssh-agent.{RESET}
+{GREEN}cargo auto publish_to_crates_io{RESET} - {YELLOW}publish to crates.io, git tag{RESET}
+  {YELLOW}You need the API secret_token for publishing. Get the secret_token on <https://crates.io/settings/tokens>.{RESET}
   {YELLOW}The secret token will be stored in a file encrypted with your SSH private key.{RESET}
   {YELLOW}You can type the passphrase of the private key for every usee. This is pretty secure.{RESET}
   {YELLOW}Somewhat less secure (but more comfortable) way is to store the private key in ssh-agent.{RESET}
@@ -124,10 +131,11 @@ fn completion() {
     if last_word == "cargo-auto" || last_word == "auto" {
         let sub_commands = vec![
             "build",
-            "win_release",
+            "release",
             "doc",
             "test",
             "commit_and_push",
+            "publish_to_crates_io",
             "github_new_release",
             "update_automation_tasks_rs"
         ];
@@ -152,42 +160,32 @@ fn task_build() {
     println!(
         r#"
   {YELLOW}After `cargo auto build`, run the compiled binary, examples and/or tests{RESET}
+{GREEN}./target/debug/{package_name} print world{RESET}
+  {YELLOW}If ok then{RESET}
+{GREEN}./target/debug/{package_name} upper world{RESET}
+  {YELLOW}If ok then{RESET}
+{GREEN}./target/debug/{package_name} upper WORLD{RESET}
   {YELLOW}if ok then{RESET}
-{GREEN}cargo auto win_release{RESET}
-"#
+{GREEN}cargo auto release{RESET}
+"#,
+        package_name = cargo_toml.package_name(),
     );
     print_examples_cmd();
 }
 
-/// cargo build --release --target x86_64-pc-windows-gnu
-/// TODO: try cross compile to windows, because Linux has problems with file datetimes on external disk
-fn task_win_release() {
-    let cargo_toml = cl::CargoToml::read();
-    cl::auto_version_increment_semver_or_date();
-    cl::auto_cargo_toml_to_md();
-    cl::auto_lines_of_code("");
-
-    cl::run_shell_command_static("cargo fmt").unwrap_or_else(|e| panic!("{e}"));
-    cl::run_shell_command_static("cargo build --release --target x86_64-pc-windows-gnu").unwrap_or_else(|e| panic!("{e}"));
-
-    // cl::ShellCommandLimitedDoubleQuotesSanitizer::new(r#"strip "target/release/{package_name}" "#)
-    //     .unwrap_or_else(|e| panic!("{e}"))
-    //     .arg("{package_name}", &cargo_toml.package_name())
-    //     .unwrap_or_else(|e| panic!("{e}"))
-    //     .run()
-    //     .unwrap_or_else(|e| panic!("{e}"));
+/// cargo build --release
+fn task_release() {
+    let cargo_toml = crate::build_cli_bin_mod::task_release();
 
     println!(
         r#"
-    {YELLOW}After `cargo auto win_release`, run the compiled binary, examples and/or tests{RESET}
-
-    {YELLOW}In Windows git-bash, copy the exe file from the Crustde container to Windows.{RESET}
-{GREEN}scp rustdevuser@crustde:/home/rustdevuser/rustprojects/{package_name}/target/x86_64-pc-windows-gnu/release/{package_name}.exe /c/Users/Luciano/rustprojects/{package_name}/{RESET}
-    {YELLOW}Run the exe in Windows git-bash.{RESET}
-{GREEN}cd ~/rustprojects/{package_name}
-./{package_name}.exe{RESET}
-
-    {YELLOW}if ok then{RESET}
+  {YELLOW}After `cargo auto release`, run the compiled binary, examples and/or tests{RESET}
+{GREEN}./target/release/{package_name} print world{RESET}
+  {YELLOW}If ok then{RESET}
+{GREEN}./target/release/{package_name} upper world{RESET}
+  {YELLOW}If ok then{RESET}
+{GREEN}./target/release/{package_name} upper WORLD{RESET}
+  {YELLOW}if ok then{RESET}
 {GREEN}cargo auto doc{RESET}
 "#,
         package_name = cargo_toml.package_name(),
@@ -225,8 +223,19 @@ fn task_commit_and_push(arg_2: Option<String>) {
     println!(
         r#"
   {YELLOW}After `cargo auto commit_and_push "message"`{RESET}
+{GREEN}cargo auto publish_to_crates_io{RESET}
+"#
+    );
+}
+
+/// publish to crates.io and git tag
+fn task_publish_to_crates_io() {
+    let tag_name_version = crate::build_cli_bin_mod::task_publish_to_crates_io();
+
+    println!(
+        r#"
   {YELLOW}Now, write the content of the release in the RELEASES.md in the `## Unreleased` section, then{RESET}
-  {YELLOW}Next, create the GitHub Release.{RESET}
+  {YELLOW}Next, create the GitHub Release {tag_name_version}.{RESET}
 {GREEN}cargo auto github_new_release{RESET}
 "#
     );

@@ -75,7 +75,9 @@ impl Default for MyApp {
     fn default() -> Self {
         /// internal function
         fn find_exist_folder_in_drives(path_wo_drive_letter: &str) -> Option<String> {
-            let drives_letters = vec!["c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"];
+            let drives_letters = vec![
+                "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+            ];
             for x in drives_letters.iter() {
                 let path = format!(r#"{x}:\{path_wo_drive_letter}"#);
                 if unwrap!(std::fs::exists(&path)) {
@@ -125,7 +127,10 @@ impl eframe::App for MyApp {
         fonts
             .font_data
             // .ttf and .otf supported
-            .insert("Roboto-Regular".to_owned(), egui::FontData::from_static(include_bytes!("../fonts/Roboto-Regular.ttf")));
+            .insert(
+                "Roboto-Regular".to_owned(),
+                egui::FontData::from_static(include_bytes!("../fonts/Roboto-Regular.ttf")),
+            );
         // Put my font first (highest priority):
         unwrap!(fonts.families.get_mut(&egui::FontFamily::Proportional)).insert(0, "Roboto-Regular".to_owned());
         // Put my font as last fallback for monospace:
@@ -158,7 +163,11 @@ impl eframe::App for MyApp {
                     ui.label(" ");
                     ui.label("First backup:");
                     if self.original1.is_some() && self.backup1_of_original1.is_some() {
-                        ui.label(format!("    {} ---> {}", unwrap!(self.original1.clone()), unwrap!(self.backup1_of_original1.clone()),));
+                        ui.label(format!(
+                            "    {} ---> {}",
+                            unwrap!(self.original1.clone()),
+                            unwrap!(self.backup1_of_original1.clone()),
+                        ));
                     } else {
                         if !self.original1.is_some() {
                             ui.label(format!("    Folder {} does not exist!", ORIGINAL1));
@@ -169,7 +178,11 @@ impl eframe::App for MyApp {
                     }
                     ui.label("Second backup:");
                     if self.original1.is_some() && self.backup2_of_original1.is_some() {
-                        ui.label(format!("    {} ---> {}", unwrap!(self.original1.clone()), unwrap!(self.backup2_of_original1.clone()),));
+                        ui.label(format!(
+                            "    {} ---> {}",
+                            unwrap!(self.original1.clone()),
+                            unwrap!(self.backup2_of_original1.clone()),
+                        ));
                     } else {
                         if !self.original1.is_some() {
                             ui.label(format!("    Folder {} does not exist!", ORIGINAL1));
@@ -180,7 +193,11 @@ impl eframe::App for MyApp {
                     }
                     ui.label("Third backup:");
                     if self.original2.is_some() && self.backup_of_original2.is_some() {
-                        ui.label(format!("    {} ---> {}", unwrap!(self.original2.clone()), unwrap!(self.backup_of_original2.clone()),));
+                        ui.label(format!(
+                            "    {} ---> {}",
+                            unwrap!(self.original2.clone()),
+                            unwrap!(self.backup_of_original2.clone()),
+                        ));
                     } else {
                         if !self.original2.is_some() {
                             ui.label(format!("    Folder {} does not exist!", ORIGINAL2));
@@ -221,13 +238,18 @@ impl MyApp {
         }
         if self.original1.is_some() && self.backup2_of_original1.is_some() {
             self.text_to_show.push_str("\nSecond backup\n");
-            self.backup(unwrap!(self.original1.clone()), unwrap!(self.backup2_of_original1.clone()), "second");
+            self.backup(
+                unwrap!(self.original1.clone()),
+                unwrap!(self.backup2_of_original1.clone()),
+                "second",
+            );
         }
         if self.original2.is_some() && self.backup_of_original2.is_some() {
             self.text_to_show.push_str("\nThird backup\n");
             self.backup(unwrap!(self.original2.clone()), unwrap!(self.backup_of_original2.clone()), "third");
         }
-        self.text_to_show.push_str(&format!("\nAll files changed for backup: {}\n", self.count_files_changed));
+        self.text_to_show
+            .push_str(&format!("\nAll files changed for backup: {}\n", self.count_files_changed));
     }
 
     fn backup(&mut self, source: String, destination: String, backup_number: &str) {
@@ -242,7 +264,10 @@ impl MyApp {
         let current_local: DateTime<Local> = Local::now();
         let now_formatted = current_local.format("%Y-%m-%d_%H-%M-%S").to_string();
         // take the "e:\" part of destination to create the new folder
-        let deleted_on_backup_folder = format!(r#"{}deleted_or_renamed_on_backup\{now_formatted}_{backup_number}_backup"#, &destination[..3]);
+        let deleted_on_backup_folder = format!(
+            r#"{}deleted_or_renamed_on_backup\{now_formatted}_{backup_number}_backup"#,
+            &destination[..3]
+        );
         // let mut debug_vec = vec![];
         for x in &self.files_changed {
             // only the destination folder and prepare to move them
