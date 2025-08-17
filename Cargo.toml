@@ -8,6 +8,7 @@ description = "Simple backup program tailored for my friend Željko. Made with r
 repository = "https://github.com/bestia-dev/backup_for_zeljko_egui"
 readme = "README.md"
 license = "MIT"
+# Keyword must be only one word: lowercase letters, hyphens(-) or numbers, less then 35 characters, at most 5 keywords per crate
 keywords = ["obsolete","tutorial","egui","rust","gui"]
 categories = ["gui"]
 publish = false
